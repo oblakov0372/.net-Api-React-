@@ -42,6 +42,7 @@ namespace BookProject.Resource.Api.Controllers
         {
             Book item = new Book()
             {
+                Url = request.Url,
                 Title = request.Title,
                 Author = request.Author,
                 Price = request.Price
@@ -55,6 +56,7 @@ namespace BookProject.Resource.Api.Controllers
             Book itemForEdit = await _bookService.GetById(id);
             if (itemForEdit == null)
                 return BadRequest("Not Found");
+            itemForEdit.Url = request.Url;
             itemForEdit.Title = request.Title;
             itemForEdit.Author = request.Author;
             itemForEdit.Price = request.Price;
