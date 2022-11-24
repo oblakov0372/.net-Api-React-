@@ -1,0 +1,41 @@
+.container {
+  margin-top: 20px;
+  width: 270px;
+  text-align: center;
+
+  img {
+    border-radius: 5px;
+  }
+
+  h2 {
+    font-weight: 800;
+    font-size: 20px;
+  }
+  &__bottom {
+    width: 240px;
+    margin: 0 auto;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    span {
+      font-weight: 700;
+      font-size: 22px;
+    }
+    &__button {
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 18px;
+      background: #ffffff;
+      color: #eb5a1e;
+      border: 1px solid #eb5a1e;
+      border-radius: 30px;
+      padding: 7px 20px;
+      transition: all ease-in-out 0.3s;
+      &:hover {
+        background: #eb5a1e;
+        color: #fff;
+      }
+    }
+  }
+}
