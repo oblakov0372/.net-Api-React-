@@ -14,6 +14,7 @@ namespace BookProject.Resource.Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false)
@@ -41,7 +42,7 @@ namespace BookProject.Resource.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "UserCart",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -51,36 +52,36 @@ namespace BookProject.Resource.Api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_UserCart", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_Books_BookId",
+                        name: "FK_UserCart_Books_BookId",
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Orders_Users_UserId",
+                        name: "FK_UserCart_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_BookId",
-                table: "Orders",
+                name: "IX_UserCart_BookId",
+                table: "UserCart",
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_UserId",
-                table: "Orders",
+                name: "IX_UserCart_UserId",
+                table: "UserCart",
                 column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "UserCart");
 
             migrationBuilder.DropTable(
                 name: "Books");

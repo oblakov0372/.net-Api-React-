@@ -7,6 +7,8 @@ const Home = () => {
       <h1>All Books</h1>
       <div className={classes.container__items}>
         <BookBlock/>
+        <BookBlock/>
+        
       </div>
     </div>
   )

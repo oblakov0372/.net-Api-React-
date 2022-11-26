@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookProject.Resource.Api.Entities
 {
-    public class Order
+    public class UserCart
     {
         [Key]
         public int Id { get; set; }

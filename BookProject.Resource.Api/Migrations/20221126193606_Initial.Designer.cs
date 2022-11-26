@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookProject.Resource.Api.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    [Migration("20221124164105_EditEntityBook")]
-    partial class EditEntityBook
+    [Migration("20221126193606_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,29 +51,6 @@ namespace BookProject.Resource.Api.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("BookProject.Resource.Api.Entities.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders");
-                });
-
             modelBuilder.Entity("BookProject.Resource.Api.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -106,7 +83,30 @@ namespace BookProject.Resource.Api.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("BookProject.Resource.Api.Entities.Order", b =>
+            modelBuilder.Entity("BookProject.Resource.Api.Entities.UserCart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserCart");
+                });
+
+            modelBuilder.Entity("BookProject.Resource.Api.Entities.UserCart", b =>
                 {
                     b.HasOne("BookProject.Resource.Api.Entities.Book", "Book")
                         .WithMany()

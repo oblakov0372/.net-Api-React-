@@ -13,60 +13,75 @@ namespace BookProject.Resource.Api.Services
             _context = context;
         }
         //For Admin
-        public async Task AddBookToItems(Book item)
+        public void AddBookToItems(Book item)
         {
             _context.Books.Add(item);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
-        public async Task<Book> DeleteBookFromItems(int id)
+        public Book DeleteBookFromItems(int id)
         {
-            var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
+            var book = _context.Books.FirstOrDefault(x => x.Id == id);
             if (book == null) return null;
             _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return book;
         }
 
-        public async Task UpdateBook(Book item)
+        public void UpdateBook(Book item)
         {
             if (_context.Books.Where(b => b.Id == item.Id) == null) return;
             _context.Books.Update(item);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
 
         // For Users
-        public async Task AddBookToOrder(Book item)
+
+        public UserCart AddBookToCart(int bookId)
         {
-            Order itemForOrder = new Order()
+            List<int> bookIds = _context.Books.Select(o => o.Id).ToList();
+            if (bookIds.Where(id => id == bookId).FirstOrDefault() == null)
+                return null;
+            UserCart itemForCart = new UserCart()
             {
-                UserId = 1,
-                BookId = item.Id,
+                UserId = 2,
+                BookId = bookId,
             };
 
-            _context.Orders.Add(itemForOrder);
-            await _context.SaveChangesAsync();
+            _context.UserCart.Add(itemForCart);
+            _context.SaveChanges();
+            return itemForCart;
         }
 
-        public async Task DeleteBookFromOrder(int id)
+        public UserCart DeleteBookFromCart(int id)
         {
-            var order = _context.Orders.Where(o => o.BookId == id).FirstOrDefault();
-            if (order == null) return;
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
+            var itemInCart = _context.UserCart.Where(o => o.BookId == id && o.UserId == 2).FirstOrDefault();
+            if (itemInCart == null) return null;
+            _context.UserCart.Remove(itemInCart);
+            _context.SaveChanges();
+            return itemInCart;
         }
 
-        public async Task<Book> GetById(int id)
+        public Book GetById(int id)
         {
-            return await _context.Books.SingleOrDefaultAsync(x => x.Id == id);
+            return _context.Books.SingleOrDefault(x => x.Id == id);
         }
 
-        public async Task<List<Book>> GetAll()
+        public List<Book> GetAll()
         {
-            return await _context.Books.ToListAsync();
+            return _context.Books.ToList();
         }
 
-        
+        public void ClearCart()
+        {
+            List<UserCart> itemInCart = _context.UserCart.Where(c => c.UserId == 2).ToList();
+
+            foreach (UserCart item in itemInCart)
+            {
+                _context.UserCart.Remove(item);
+            }
+            _context.SaveChanges();
+        }
     }
 }

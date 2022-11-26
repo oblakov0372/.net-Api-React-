@@ -19,26 +19,41 @@ namespace BookProject.Resource.Api.Controllers
         }
         //For users
         [HttpGet("Books")]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
-            List<Book> items = await _bookService.GetAll();
+            List<Book> items = _bookService.GetAll();
             return Ok(items);
         }
         [HttpGet("Book{id}")]
-        public async Task<IActionResult> GetBookById(int id)
+        public IActionResult GetBookById(int id)
         {
-            Book item = await _bookService.GetById(id);
-            if(item == null)
+            Book item = _bookService.GetById(id);
+            if (item == null)
                 return BadRequest("Haven't book with this id");
-            
+
             return Ok(item);
         }
+        [HttpPost("AddBookToCart")]
+        public IActionResult AddBookToCart(int bookId)
+        {
+            var bookInCart = _bookService.AddBookToCart(bookId);
+            if (bookInCart == null)
+                return NotFound();
+            return Ok(bookInCart);
+        }
 
-
+        [HttpDelete("RemoveBookFromCart{bookId}")]
+        public IActionResult RemoveBookFromCart(int bookId)
+        {
+            var bookInCart = _bookService.DeleteBookFromCart(bookId);
+            if (bookInCart == null)
+                return NotFound();
+            return Ok(bookInCart);
+        }
         //For Admin
 
         [HttpPost("AddBookToItems")]
-        public async Task<IActionResult> AddBookToItems([FromBody]CreateBook request)
+        public IActionResult AddBookToItems([FromBody] CreateBook request)
         {
             Book item = new Book()
             {
@@ -47,29 +62,29 @@ namespace BookProject.Resource.Api.Controllers
                 Author = request.Author,
                 Price = request.Price
             };
-            await _bookService.AddBookToItems(item);
+            _bookService.AddBookToItems(item);
             return Ok(item);
         }
         [HttpPut("UpdateBook{id}")]
-        public async Task<IActionResult> UpdateBook(int id,UpdateBook request)
+        public IActionResult UpdateBook(int id, UpdateBook request)
         {
-            Book itemForEdit = await _bookService.GetById(id);
+            Book itemForEdit = _bookService.GetById(id);
             if (itemForEdit == null)
                 return BadRequest("Not Found");
             itemForEdit.Url = request.Url;
             itemForEdit.Title = request.Title;
             itemForEdit.Author = request.Author;
             itemForEdit.Price = request.Price;
-            await _bookService.UpdateBook(itemForEdit);
+            _bookService.UpdateBook(itemForEdit);
             return Ok(itemForEdit);
         }
-        [HttpDelete("Delete{id}")]
-        public async Task<IActionResult> DeleteBook(int id)
+        [HttpDelete("DeleteBook{id}")]
+        public IActionResult DeleteBook(int id)
         {
-            Book deletedBook = await _bookService.DeleteBookFromItems(id);
+            Book deletedBook = _bookService.DeleteBookFromItems(id);
             if (deletedBook == null)
                 return BadRequest("Not Found");
-            
+
             return Ok(deletedBook);
         }
     }
