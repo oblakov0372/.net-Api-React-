@@ -9,16 +9,16 @@ namespace BookProject.Resource.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BooksContoller : ControllerBase
+    public class BooksController : ControllerBase
     {
         private readonly IBookService _bookService;
 
-        public BooksContoller(IBookService bookService)
+        public BooksController(IBookService bookService)
         {
             _bookService = bookService;
         }
         //For users
-        [HttpGet("Books")]
+        [HttpGet]
         public IActionResult GetAll()
         {
             List<Book> items = _bookService.GetAll();

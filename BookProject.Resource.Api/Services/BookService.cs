@@ -40,18 +40,30 @@ namespace BookProject.Resource.Api.Services
 
         public UserCart AddBookToCart(int bookId)
         {
-            List<int> bookIds = _context.Books.Select(o => o.Id).ToList();
-            if (bookIds.Where(id => id == bookId).FirstOrDefault() == null)
+            Book bookItem = _context.Books.Where(b => b.Id == bookId).FirstOrDefault();
+            if (bookItem == null)
                 return null;
-            UserCart itemForCart = new UserCart()
-            {
-                UserId = 2,
-                BookId = bookId,
-            };
 
-            _context.UserCart.Add(itemForCart);
+            UserCart item = _context.UserCart.Where(c => c.BookId == bookId).FirstOrDefault();
+
+            if (item != null)
+            {
+                item.Count += 1;
+                _context.UserCart.Update(item);
+            }
+            else
+            {
+                item = new UserCart()
+                {
+                    UserId = 2,
+                    BookId = bookId,
+                    Count = 1
+                };
+                _context.UserCart.Add(item);
+            }
+
             _context.SaveChanges();
-            return itemForCart;
+            return item;
         }
 
         public UserCart DeleteBookFromCart(int id)
