@@ -1,5 +1,7 @@
 ﻿using BookProject.Resource.Api.Entities;
+using BookProject.Resource.Api.Models.Book;
 using BookProject.Resource.Api.Repository;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookProject.Resource.Api.Services
@@ -37,7 +39,27 @@ namespace BookProject.Resource.Api.Services
 
 
         // For Users
-
+        public List<CartItem> GetItemsInCart()
+        {
+            List<CartItem> cartItems = new List<CartItem>();
+            List<UserCart> items = _context.UserCart.Where(i => i.UserId == 2).ToList();
+            foreach(var item in items)
+            {
+                Book book = _context.Books.FirstOrDefault(x => x.Id == item.BookId);
+                if(book == null) continue;
+                CartItem cartItem = new CartItem()
+                {
+                    Id = book.Id,
+                    Url = book.Url,
+                    Title = book.Title,
+                    Author = book.Author,
+                    Price = book.Price,
+                    Count = item.Count
+                };
+                cartItems.Add(cartItem);
+            }
+            return cartItems;
+        }
         public UserCart AddBookToCart(int bookId)
         {
             Book bookItem = _context.Books.Where(b => b.Id == bookId).FirstOrDefault();
@@ -70,11 +92,25 @@ namespace BookProject.Resource.Api.Services
         {
             var itemInCart = _context.UserCart.Where(o => o.BookId == id && o.UserId == 2).FirstOrDefault();
             if (itemInCart == null) return null;
-            _context.UserCart.Remove(itemInCart);
+            if(itemInCart.Count > 1)
+            {
+                itemInCart.Count--;
+                _context.UserCart.Update(itemInCart);
+            }
+            else
+                _context.UserCart.Remove(itemInCart);
+            
             _context.SaveChanges();
             return itemInCart;
         }
-
+        public bool ClearRowInCart(int id)
+        {
+            var itemInCart = _context.UserCart.Where(o => o.BookId == id && o.UserId == 2).FirstOrDefault();
+            if (itemInCart == null) return false;
+            _context.UserCart.Remove(itemInCart);
+            _context.SaveChanges();
+            return true;
+        }
         public Book GetById(int id)
         {
             return _context.Books.SingleOrDefault(x => x.Id == id);

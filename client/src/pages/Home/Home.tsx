@@ -6,6 +6,7 @@ import { Book } from '../../redux/book/types'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 import { setItems } from '../../redux/book/slice'
+import { setItems as setCartItems } from '../../redux/cart/slice'
 const Home = () => {
 
   const items = useSelector((state:RootState) => state.pizza.items)
@@ -14,6 +15,8 @@ const Home = () => {
   useEffect(() => {
     axios.get('https://localhost:7040/api/books')
          .then((responce) => dispatch(setItems(responce.data)));
+    axios.get('https://localhost:7040/api/books/cartitems').then((responce) =>dispatch(setCartItems(responce.data))
+    )
   },[])
   return (
     <div className={classes.container}>

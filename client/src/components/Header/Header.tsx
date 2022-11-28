@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom'
 import classes from './Header.module.scss'
 import logoImg from '../../../public/img/logo.png'
 import cartImg from '../../../public/img/cart.png'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/store'
 const Header = () => {
+  const {totalPrice,totalBooks} = useSelector((state:RootState) => state.cart)
   return (
     <div className={classes.header}>
       <Link to="/">
@@ -17,10 +20,10 @@ const Header = () => {
       </Link>
       <Link to="/cart">
         <div className={classes.header__cartButton}>
-          <span>54 $</span>
+          <span>{totalPrice} $</span>
           <div>
             <img width={20} src={cartImg} alt="cart" />
-            <span>3</span>
+            <span>{totalBooks}</span>
           </div>
         </div>
       </Link>

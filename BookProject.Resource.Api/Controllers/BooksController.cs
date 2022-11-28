@@ -33,6 +33,14 @@ namespace BookProject.Resource.Api.Controllers
 
             return Ok(item);
         }
+
+        [HttpGet("CartItems")]
+        public IActionResult GetItemsInCart()
+        {
+            List<CartItem> cartItems = _bookService.GetItemsInCart();
+            return Ok(cartItems);
+        }
+
         [HttpPost("AddBookToCart")]
         public IActionResult AddBookToCart(int bookId)
         {
@@ -49,6 +57,21 @@ namespace BookProject.Resource.Api.Controllers
             if (bookInCart == null)
                 return NotFound();
             return Ok(bookInCart);
+        }
+        [HttpDelete("ClearRowInCart{bookId}")]
+        public IActionResult ClearRowInCart(int bookId)
+        {
+            bool responce = _bookService.ClearRowInCart(bookId);
+            if (responce == false)
+                return BadRequest("Not Found");
+            return Ok("Cleared");
+        }
+
+        [HttpDelete("ClearCart")]
+        public IActionResult ClearCart()
+        {
+            _bookService.ClearCart();
+            return Ok();
         }
         //For Admin
 
