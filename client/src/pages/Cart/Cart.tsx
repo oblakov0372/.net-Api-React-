@@ -48,7 +48,7 @@ const Cart = () => {
           <button>Pay now</button>
         </div>
       </div>
-    </div>):<h1 >Пусто</h1>}
+    </div>):<h1>Пусто</h1>}
     </>
   )
 }
