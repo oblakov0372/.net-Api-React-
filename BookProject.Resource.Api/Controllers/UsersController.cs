@@ -18,8 +18,10 @@ namespace BookProject.Resource.Api.Controllers
         [HttpPost("login")]
         public IActionResult Login(Authenticate model)
         {
-            string response = _userService.Login(model);
-            return Ok(response);
+            string token = _userService.Login(model);
+            if(token == null) 
+                return BadRequest("Incorrect");
+            return Ok(token);
         }
     }
 }
