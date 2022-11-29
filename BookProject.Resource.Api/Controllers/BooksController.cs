@@ -1,6 +1,7 @@
 ﻿using BookProject.Resource.Api.Entities;
 using BookProject.Resource.Api.Models.Book;
 using BookProject.Resource.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -35,12 +36,13 @@ namespace BookProject.Resource.Api.Controllers
         }
 
         [HttpGet("CartItems")]
+        [Authorize]
         public IActionResult GetItemsInCart()
         {
             List<CartItem> cartItems = _bookService.GetItemsInCart();
             return Ok(cartItems);
         }
-
+        [Authorize]
         [HttpPost("AddBookToCart")]
         public IActionResult AddBookToCart(int bookId)
         {
@@ -49,7 +51,7 @@ namespace BookProject.Resource.Api.Controllers
                 return NotFound();
             return Ok(bookInCart);
         }
-
+        [Authorize]
         [HttpDelete("RemoveBookFromCart{bookId}")]
         public IActionResult RemoveBookFromCart(int bookId)
         {
@@ -58,6 +60,7 @@ namespace BookProject.Resource.Api.Controllers
                 return NotFound();
             return Ok(bookInCart);
         }
+        [Authorize]
         [HttpDelete("ClearRowInCart{bookId}")]
         public IActionResult ClearRowInCart(int bookId)
         {
@@ -66,7 +69,7 @@ namespace BookProject.Resource.Api.Controllers
                 return BadRequest("Not Found");
             return Ok("Cleared");
         }
-
+        [Authorize]
         [HttpDelete("ClearCart")]
         public IActionResult ClearCart()
         {
@@ -74,7 +77,7 @@ namespace BookProject.Resource.Api.Controllers
             return Ok();
         }
         //For Admin
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddBookToItems")]
         public IActionResult AddBookToItems([FromBody] CreateBook request)
         {
@@ -88,6 +91,7 @@ namespace BookProject.Resource.Api.Controllers
             _bookService.AddBookToItems(item);
             return Ok(item);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateBook{id}")]
         public IActionResult UpdateBook(int id, UpdateBook request)
         {
@@ -101,6 +105,7 @@ namespace BookProject.Resource.Api.Controllers
             _bookService.UpdateBook(itemForEdit);
             return Ok(itemForEdit);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteBook{id}")]
         public IActionResult DeleteBook(int id)
         {

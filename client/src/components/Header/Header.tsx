@@ -7,6 +7,7 @@ import loginImg from '../../../public/img/login.png'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
 const Header = () => {
+  const isLogged = useSelector((state:RootState) => state.user.isLogged)
   const {totalPrice,totalBooks} = useSelector((state:RootState) => state.cart)
   return (
     <div className={classes.header}>
@@ -29,11 +30,11 @@ const Header = () => {
           </div>
         </div>
       </Link>
-      <Link to="login">
+      {!isLogged && <Link to="login">
         <div className={classes.header__left__loginButton}>
           <img src={loginImg} alt="loginImg" width={40} />
         </div>
-      </Link>
+      </Link>}
       </div>
     </div>
   )

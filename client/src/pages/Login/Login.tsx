@@ -1,5 +1,9 @@
 import axios, { AxiosError } from 'axios';
 import React, {  useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { redirect, useNavigate } from 'react-router-dom';
+import { RootState } from '../../redux/store';
+import { setIsLogged } from '../../redux/user/slice';
 import classes from './Login.module.scss'
 
 type postDataType = {
@@ -9,13 +13,18 @@ type postDataType = {
 
 const Login = () => {
   const[isSubmit,setIsSubmit] = useState(false);
+  const isLogged = useSelector((state:RootState) => state.user.isLogged)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   async function submit(e:any,value:postDataType){
     e.preventDefault()
     try{
       setIsSubmit(true)
       let res = await axios.post("https://localhost:7040/api/Users/login",value)
-      console.log(res.data);
+      localStorage.setItem("jwtToken",res.data)
+      dispatch(setIsLogged(true))
+      navigate('/')
     }
     catch(error){
       const err = error as AxiosError
