@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BookProject.Resource.Api.Controllers
 {
@@ -12,11 +13,11 @@ namespace BookProject.Resource.Api.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly IBookService _bookService;
-
+        private readonly IBookService _bookService; 
         public BooksController(IBookService bookService)
         {
             _bookService = bookService;
+            
         }
         //For users
         [HttpGet]
@@ -39,14 +40,16 @@ namespace BookProject.Resource.Api.Controllers
         [Authorize]
         public IActionResult GetItemsInCart()
         {
-            List<CartItem> cartItems = _bookService.GetItemsInCart();
+            int userId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            List<CartItem> cartItems = _bookService.GetItemsInCart(userId);
             return Ok(cartItems);
         }
         [Authorize]
         [HttpPost("AddBookToCart")]
         public IActionResult AddBookToCart(int bookId)
         {
-            var bookInCart = _bookService.AddBookToCart(bookId);
+            int userId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var bookInCart = _bookService.AddBookToCart(bookId,userId);
             if (bookInCart == null)
                 return NotFound();
             return Ok(bookInCart);
@@ -55,7 +58,8 @@ namespace BookProject.Resource.Api.Controllers
         [HttpDelete("RemoveBookFromCart{bookId}")]
         public IActionResult RemoveBookFromCart(int bookId)
         {
-            var bookInCart = _bookService.DeleteBookFromCart(bookId);
+            int userId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var bookInCart = _bookService.DeleteBookFromCart(bookId,userId);
             if (bookInCart == null)
                 return NotFound();
             return Ok(bookInCart);
@@ -64,7 +68,8 @@ namespace BookProject.Resource.Api.Controllers
         [HttpDelete("ClearRowInCart{bookId}")]
         public IActionResult ClearRowInCart(int bookId)
         {
-            bool responce = _bookService.ClearRowInCart(bookId);
+            int userId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            bool responce = _bookService.ClearRowInCart(bookId, userId);
             if (responce == false)
                 return BadRequest("Not Found");
             return Ok("Cleared");
@@ -73,7 +78,8 @@ namespace BookProject.Resource.Api.Controllers
         [HttpDelete("ClearCart")]
         public IActionResult ClearCart()
         {
-            _bookService.ClearCart();
+            int userId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            _bookService.ClearCart(userId);
             return Ok();
         }
         //For Admin

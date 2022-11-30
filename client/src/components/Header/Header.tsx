@@ -4,10 +4,13 @@ import classes from './Header.module.scss'
 import logoImg from '../../../public/img/logo.png'
 import cartImg from '../../../public/img/cart.png'
 import loginImg from '../../../public/img/login.png'
-import { useSelector } from 'react-redux'
+import logoutImg from '../../../public/img/logout.png'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../redux/store'
+import { setIsLoggedStatus } from '../../redux/user/slice'
 const Header = () => {
   const isLogged = useSelector((state:RootState) => state.user.isLogged)
+  const dispatch = useDispatch();
   const {totalPrice,totalBooks} = useSelector((state:RootState) => state.cart)
   return (
     <div className={classes.header}>
@@ -35,6 +38,12 @@ const Header = () => {
           <img src={loginImg} alt="loginImg" width={40} />
         </div>
       </Link>}
+      {
+        isLogged &&
+        <div className={classes.header__left__loginButton}>
+          <img src={logoutImg} onClick={() => dispatch(setIsLoggedStatus(false))} alt="logoutImg" width={40} />
+        </div>
+      }
       </div>
     </div>
   )

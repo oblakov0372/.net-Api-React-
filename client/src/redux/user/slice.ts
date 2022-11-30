@@ -1,19 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isLogged: false,
+  isLogged: localStorage.getItem("jwtToken") ? true : false,
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setIsLogged(state, action) {
+    setIsLoggedStatus(state, action) {
       state.isLogged = action.payload;
+      if (!action.payload) {
+        localStorage.removeItem("jwtToken");
+        location.reload();
+      }
     },
   },
 });
 
-export const { setIsLogged } = userSlice.actions;
+export const { setIsLoggedStatus } = userSlice.actions;
 
 export default userSlice.reducer;

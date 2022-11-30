@@ -1,8 +1,10 @@
 ﻿using BookProject.Resource.Api.Entities;
 using BookProject.Resource.Api.Models.Book;
 using BookProject.Resource.Api.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BookProject.Resource.Api.Services
 {
@@ -32,6 +34,7 @@ namespace BookProject.Resource.Api.Services
 
         public void UpdateBook(Book item)
         {
+
             if (_context.Books.Where(b => b.Id == item.Id) == null) return;
             _context.Books.Update(item);
             _context.SaveChanges();
@@ -39,10 +42,10 @@ namespace BookProject.Resource.Api.Services
 
 
         // For Users
-        public List<CartItem> GetItemsInCart()
+        public List<CartItem> GetItemsInCart(int userId)
         {
             List<CartItem> cartItems = new List<CartItem>();
-            List<UserCart> items = _context.UserCart.Where(i => i.UserId == 2).ToList();
+            List<UserCart> items = _context.UserCart.Where(i => i.UserId == userId).ToList();
             foreach(var item in items)
             {
                 Book book = _context.Books.FirstOrDefault(x => x.Id == item.BookId);
@@ -60,13 +63,13 @@ namespace BookProject.Resource.Api.Services
             }
             return cartItems;
         }
-        public UserCart AddBookToCart(int bookId)
+        public UserCart AddBookToCart(int bookId, int userId)
         {
             Book bookItem = _context.Books.Where(b => b.Id == bookId).FirstOrDefault();
             if (bookItem == null)
                 return null;
 
-            UserCart item = _context.UserCart.Where(c => c.BookId == bookId).FirstOrDefault();
+            UserCart item = _context.UserCart.Where(c => c.BookId == bookId && c.UserId==userId).FirstOrDefault();
 
             if (item != null)
             {
@@ -77,7 +80,7 @@ namespace BookProject.Resource.Api.Services
             {
                 item = new UserCart()
                 {
-                    UserId = 2,
+                    UserId = userId,
                     BookId = bookId,
                     Count = 1
                 };
@@ -88,9 +91,9 @@ namespace BookProject.Resource.Api.Services
             return item;
         }
 
-        public UserCart DeleteBookFromCart(int id)
+        public UserCart DeleteBookFromCart(int id, int userId)
         {
-            var itemInCart = _context.UserCart.Where(o => o.BookId == id && o.UserId == 2).FirstOrDefault();
+            var itemInCart = _context.UserCart.Where(o => o.BookId == id && o.UserId == userId).FirstOrDefault();
             if (itemInCart == null) return null;
             if(itemInCart.Count > 1)
             {
@@ -103,14 +106,26 @@ namespace BookProject.Resource.Api.Services
             _context.SaveChanges();
             return itemInCart;
         }
-        public bool ClearRowInCart(int id)
+        public bool ClearRowInCart(int id, int userId)
         {
-            var itemInCart = _context.UserCart.Where(o => o.BookId == id && o.UserId == 2).FirstOrDefault();
+            var itemInCart = _context.UserCart.Where(o => o.BookId == id && o.UserId == userId).FirstOrDefault();
             if (itemInCart == null) return false;
             _context.UserCart.Remove(itemInCart);
             _context.SaveChanges();
             return true;
         }
+
+        public void ClearCart(int userId)
+        {
+            List<UserCart> itemInCart = _context.UserCart.Where(c => c.UserId == userId).ToList();
+
+            foreach (UserCart item in itemInCart)
+            {
+                _context.UserCart.Remove(item);
+            }
+            _context.SaveChanges();
+        }
+
         public Book GetById(int id)
         {
             return _context.Books.SingleOrDefault(x => x.Id == id);
@@ -121,15 +136,6 @@ namespace BookProject.Resource.Api.Services
             return _context.Books.ToList();
         }
 
-        public void ClearCart()
-        {
-            List<UserCart> itemInCart = _context.UserCart.Where(c => c.UserId == 2).ToList();
-
-            foreach (UserCart item in itemInCart)
-            {
-                _context.UserCart.Remove(item);
-            }
-            _context.SaveChanges();
-        }
+        
     }
 }

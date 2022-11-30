@@ -10,6 +10,7 @@ import { CartItem as CartItemProps} from '../../redux/cart/types'
 import axios from 'axios'
 import { clearCart, setItems } from '../../redux/cart/slice'
 const Cart = () => {
+  
 
   React.useEffect(()=>{
     axios.get('https://localhost:7040/api/books/cartitems').then((responce) =>dispatch(setItems(responce.data))

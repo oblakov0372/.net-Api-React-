@@ -3,7 +3,7 @@ import React, {  useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { redirect, useNavigate } from 'react-router-dom';
 import { RootState } from '../../redux/store';
-import { setIsLogged } from '../../redux/user/slice';
+import { setIsLoggedStatus } from '../../redux/user/slice';
 import classes from './Login.module.scss'
 
 type postDataType = {
@@ -23,8 +23,9 @@ const Login = () => {
       setIsSubmit(true)
       let res = await axios.post("https://localhost:7040/api/Users/login",value)
       localStorage.setItem("jwtToken",res.data)
-      dispatch(setIsLogged(true))
+      dispatch(setIsLoggedStatus(true))
       navigate('/')
+      location.reload();
     }
     catch(error){
       const err = error as AxiosError
