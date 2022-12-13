@@ -1,10 +1,12 @@
 import axios, { AxiosError } from 'axios';
 import React, {  useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../redux/store';
 import { setIsLoggedStatus } from '../../redux/user/slice';
 import classes from './Login.module.scss'
+import { setItems as setCartItems } from '../../redux/cart/slice'
+
 
 type postDataType = {
   email:string;
@@ -33,6 +35,7 @@ const Login = () => {
         alert("password or email incorrect")
       }
     }
+    
     setIsSubmit(false)
     
   }

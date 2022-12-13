@@ -17,38 +17,38 @@ namespace BookProject.Resource.Api.Services
             _context = context;
         }
         //For Admin
-        public void AddBookToItems(Book item)
+        public async Task AddBookToItems(Book item)
         {
             _context.Books.Add(item);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public Book DeleteBookFromItems(int id)
+        public async Task<Book> DeleteBookFromItems(int id)
         {
-            var book = _context.Books.FirstOrDefault(x => x.Id == id);
+            var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
             if (book == null) return null;
             _context.Books.Remove(book);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return book;
         }
 
-        public void UpdateBook(Book item)
+        public async Task UpdateBook(Book item)
         {
 
             if (_context.Books.Where(b => b.Id == item.Id) == null) return;
             _context.Books.Update(item);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
 
         // For Users
-        public List<CartItem> GetItemsInCart(int userId)
+        public async Task<List<CartItem>> GetItemsInCart(int userId)
         {
             List<CartItem> cartItems = new List<CartItem>();
             List<UserCart> items = _context.UserCart.Where(i => i.UserId == userId).ToList();
             foreach(var item in items)
             {
-                Book book = _context.Books.FirstOrDefault(x => x.Id == item.BookId);
+                Book book = await _context.Books.FirstOrDefaultAsync(x => x.Id == item.BookId);
                 if(book == null) continue;
                 CartItem cartItem = new CartItem()
                 {
@@ -63,13 +63,13 @@ namespace BookProject.Resource.Api.Services
             }
             return cartItems;
         }
-        public UserCart AddBookToCart(int bookId, int userId)
+        public async Task<UserCart> AddBookToCart(int bookId, int userId)
         {
-            Book bookItem = _context.Books.Where(b => b.Id == bookId).FirstOrDefault();
+            Book bookItem = await _context.Books.Where(b => b.Id == bookId).FirstOrDefaultAsync();
             if (bookItem == null)
                 return null;
 
-            UserCart item = _context.UserCart.Where(c => c.BookId == bookId && c.UserId==userId).FirstOrDefault();
+            UserCart item = await _context.UserCart.Where(c => c.BookId == bookId && c.UserId==userId).FirstOrDefaultAsync();
 
             if (item != null)
             {
@@ -87,11 +87,11 @@ namespace BookProject.Resource.Api.Services
                 _context.UserCart.Add(item);
             }
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return item;
         }
 
-        public UserCart DeleteBookFromCart(int id, int userId)
+        public async Task<UserCart> DeleteBookFromCart(int id, int userId)
         {
             var itemInCart = _context.UserCart.Where(o => o.BookId == id && o.UserId == userId).FirstOrDefault();
             if (itemInCart == null) return null;
@@ -103,19 +103,19 @@ namespace BookProject.Resource.Api.Services
             else
                 _context.UserCart.Remove(itemInCart);
             
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return itemInCart;
         }
-        public bool ClearRowInCart(int id, int userId)
+        public async Task<bool> ClearRowInCart(int id, int userId)
         {
             var itemInCart = _context.UserCart.Where(o => o.BookId == id && o.UserId == userId).FirstOrDefault();
             if (itemInCart == null) return false;
             _context.UserCart.Remove(itemInCart);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public void ClearCart(int userId)
+        public async Task ClearCart(int userId)
         {
             List<UserCart> itemInCart = _context.UserCart.Where(c => c.UserId == userId).ToList();
 
@@ -123,12 +123,12 @@ namespace BookProject.Resource.Api.Services
             {
                 _context.UserCart.Remove(item);
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public Book GetById(int id)
+        public async Task<Book> GetById(int id)
         {
-            return _context.Books.SingleOrDefault(x => x.Id == id);
+            return await _context.Books.SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public List<Book> GetAll()

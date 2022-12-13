@@ -10,11 +10,13 @@ import { CartItem as CartItemProps} from '../../redux/cart/types'
 import axios from 'axios'
 import { clearCart, setItems } from '../../redux/cart/slice'
 const Cart = () => {
-  
+  const isLoggedUser = useSelector((state:RootState) => state.user.isLogged)
 
   React.useEffect(()=>{
-    axios.get('https://localhost:7040/api/books/cartitems').then((responce) =>dispatch(setItems(responce.data))
+    if(isLoggedUser){
+      axios.get('https://localhost:7040/api/books/cartitems').then((responce) =>dispatch(setItems(responce.data))
     )
+    }
   },[])
 
   const cartItems = useSelector((state:RootState) => state.cart.items)

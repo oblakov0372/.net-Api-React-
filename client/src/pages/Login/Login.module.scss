@@ -12,7 +12,7 @@
 }
 
 .formLogin {
-  width: 25%;
+  width: calc(100vw - 90%);
   margin: 0 auto;
   border: 1px solid #d0d0d0;
   border-radius: 20px;
@@ -38,6 +38,7 @@
       border-radius: 5px;
       padding: 3px;
       font-size: 15px;
+      width: 60%;
 
       &:hover {
         border-color: #fe5f1e;
@@ -56,5 +57,9 @@
     padding: 15px 25px;
     font-weight: 700;
     font-size: 16px;
+  }
+
+  @media (max-width: 450px) {
+    width: 70%;
   }
 }

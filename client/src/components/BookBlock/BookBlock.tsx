@@ -11,7 +11,7 @@ const BookBlock:React.FC<Book> = ({id,url,title,author,price}) => {
   const dispatch = useDispatch()
   return (
     <div className={classes.container}>
-      <img width={270} height={400} src={url} alt="BookImg" />
+      <img src={url} alt="BookImg" />
       <h2>{title}</h2>
       <h2>Author: {author}</h2>
       <div className={classes.container__bottom}>

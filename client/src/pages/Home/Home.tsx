@@ -9,15 +9,17 @@ import { setItems } from '../../redux/book/slice'
 import { setItems as setCartItems } from '../../redux/cart/slice'
 
 const Home = () => {
-
   const items = useSelector((state:RootState) => state.pizza.items)
+  const isLoggedUser = useSelector((state:RootState) => state.user.isLogged)
   const dispatch = useDispatch()
 
-  useEffect(() => {
+  useEffect(()  =>  {
     axios.get('https://localhost:7040/api/books')
          .then((responce) => dispatch(setItems(responce.data)));
-    axios.get('https://localhost:7040/api/books/cartitems').then((responce) =>dispatch(setCartItems(responce.data))
-    )
+    if(isLoggedUser){
+      axios.get('https://localhost:7040/api/books/cartitems')
+         .then((responce) =>dispatch(setCartItems(responce.data)))
+    }
   },[])
   return (
     <div className={classes.container}>

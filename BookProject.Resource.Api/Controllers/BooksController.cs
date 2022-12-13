@@ -27,9 +27,9 @@ namespace BookProject.Resource.Api.Controllers
             return Ok(items);
         }
         [HttpGet("Book{id}")]
-        public IActionResult GetBookById(int id)
+        public async Task<IActionResult> GetBookById(int id)
         {
-            Book item = _bookService.GetById(id);
+            Book item = await _bookService.GetById(id);
             if (item == null)
                 return BadRequest("Haven't book with this id");
 
@@ -38,10 +38,10 @@ namespace BookProject.Resource.Api.Controllers
 
         [HttpGet("CartItems")]
         [Authorize]
-        public IActionResult GetItemsInCart()
+        public async Task<IActionResult> GetItemsInCart()
         {
             int userId = GetUserId();
-            List<CartItem> cartItems = _bookService.GetItemsInCart(userId);
+            List<CartItem> cartItems = await _bookService.GetItemsInCart(userId);
             return Ok(cartItems);
         }
         [Authorize]
@@ -67,10 +67,10 @@ namespace BookProject.Resource.Api.Controllers
         }
         [Authorize]
         [HttpDelete("ClearRowInCart{bookId}")]
-        public IActionResult ClearRowInCart(int bookId)
+        public async Task<IActionResult> ClearRowInCart(int bookId)
         {
             int userId = GetUserId();
-            bool responce = _bookService.ClearRowInCart(bookId, userId);
+            bool responce = await _bookService.ClearRowInCart(bookId, userId);
             if (responce == false)
                 return BadRequest("Not Found");
             return Ok("Cleared");
@@ -84,7 +84,6 @@ namespace BookProject.Resource.Api.Controllers
             return Ok();
         }
         //For Admin
-        [Authorize(Roles = "Admin")]
         [HttpPost("AddBookToItems")]
         public IActionResult AddBookToItems([FromBody] CreateBook request)
         {
@@ -98,25 +97,23 @@ namespace BookProject.Resource.Api.Controllers
             _bookService.AddBookToItems(item);
             return Ok(item);
         }
-        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateBook{id}")]
-        public IActionResult UpdateBook(int id, UpdateBook request)
+        public async Task<IActionResult> UpdateBook(int id, UpdateBook request)
         {
-            Book itemForEdit = _bookService.GetById(id);
+            Book itemForEdit = await _bookService.GetById(id);
             if (itemForEdit == null)
                 return BadRequest("Not Found");
             itemForEdit.Url = request.Url;
             itemForEdit.Title = request.Title;
             itemForEdit.Author = request.Author;
             itemForEdit.Price = request.Price;
-            _bookService.UpdateBook(itemForEdit);
+            await _bookService.UpdateBook(itemForEdit);
             return Ok(itemForEdit);
         }
-        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteBook{id}")]
-        public IActionResult DeleteBook(int id)
+        public async Task<IActionResult> DeleteBook(int id)
         {
-            Book deletedBook = _bookService.DeleteBookFromItems(id);
+            Book deletedBook = await _bookService.DeleteBookFromItems(id);
             if (deletedBook == null)
                 return BadRequest("Not Found");
 

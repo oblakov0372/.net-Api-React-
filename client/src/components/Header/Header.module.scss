@@ -68,4 +68,9 @@
       }
     }
   }
+  @media (max-width: 640px) {
+    &__logo__details {
+      display: none;
+    }
+  }
 }

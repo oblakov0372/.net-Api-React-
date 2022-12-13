@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import classes from './Header.module.scss'
 import logoImg from '../../../public/img/logo.png'
 import cartImg from '../../../public/img/cart.png'
@@ -11,6 +11,7 @@ import { setIsLoggedStatus } from '../../redux/user/slice'
 const Header = () => {
   const isLogged = useSelector((state:RootState) => state.user.isLogged)
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {totalPrice,totalBooks} = useSelector((state:RootState) => state.cart)
   return (
     <div className={classes.header}>

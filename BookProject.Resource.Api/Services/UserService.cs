@@ -39,10 +39,6 @@ namespace BookProject.Resource.Api.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwt = tokenHandler.WriteToken(token);
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer" + jwt);
-            }
             return jwt;
         }
 

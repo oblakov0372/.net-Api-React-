@@ -5,6 +5,11 @@ body {
   background-color: #ffdf8c;
   font-family: "Nunito", sans-serif;
 }
+@media (max-width: 430px) {
+  body {
+    background-color: white;
+  }
+}
 
 h1,
 h2,
